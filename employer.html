@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer</title>
+    <style>
+        /* General Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1c92d2, #f2fcfe); /* Matching Login Page Gradient */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+    
+        /* Container Styling */
+        .container {
+            width: 80%;
+            max-width: 900px;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-in-out;
+        }
+    
+        h1, h2, h3 {
+            text-align: center;
+            color: #1c92d2; /* Consistent Primary Color */
+        }
+    
+        /* Form and Input Styling */
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+    
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #1c92d2; /* Consistent Focus Color */
+            outline: none;
+        }
+    
+        /* Button Styling */
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #1c92d2, #12c2e9); /* Matching Button Gradient */
+            border: none;
+            border-radius: 25px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.4s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+    
+        button:hover {
+            background: linear-gradient(45deg, #12c2e9, #1c92d2); /* Reversed Gradient on Hover */
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+    
+        button::after {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transition: transform 0.5s ease-in-out;
+        }
+    
+        button:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+    
+        /* Error Styling */
+        .error {
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+        }
+    
+        /* Link Styling */
+        a {
+            color: #1c92d2;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+    
+        a:hover {
+            color: #12c2e9;
+            text-decoration: underline;
+        }
+    
+        /* Additional Styles for Lists and Items */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+    
+        li {
+            margin-bottom: 20px;
+        }
+    
+        img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+    
+        /* Animation for Container */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    
+</head>
+
+<body>
+    <div class="container">
+        <h2>Welcome, {{ username }}</h2>
+        <h3>Add Questions and Answers</h3>
+        <form method="post" action="{{ url_for('add_question_answer') }}">
+            <label for="question">Question:</label>
+            <input type="text" id="question" name="question" required><br>
+            <label for="answer">Answer:</label>
+            <textarea id="answer" name="answer" rows="4" required></textarea><br>
+            <button type="submit">Add Question and Answer</button>
+        </form>
+        {% if questions_answers %}
+        {% for qa in questions_answers[:1] %} {# Slice the list to get only the first element #}
+        <form method="post" action="{{ url_for('view_employye_results', employer_id=qa.employer.id) }}">
+            <button type="submit">View Employee Results</button>
+        </form>
+        {% endfor %}
+        {% endif %}
+
+        <h3>Previously Added Questions and Answers</h3>
+        <ul>
+            {% for qa in questions_answers %}
+            <li>
+                <strong>{{ qa.question }}</strong><br>
+                {{ qa.answer }}
+                <form method="post" action="{{ url_for('delete_question', question_id=qa.id) }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</body>
+
+</html>
